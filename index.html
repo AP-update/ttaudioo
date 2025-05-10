@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>TikTok Audio Downloader</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+  <style>
+    html, body {
+      height: auto;
+      min-height: 100%;
+      margin: 0;
+      padding: 0;
+      overflow-x: hidden;
+    }
+
+    body {
+      background: linear-gradient(135deg, #2c3e50, #4ca1af);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-family: sans-serif;
+      min-height: 100%; /* Pastikan body setidaknya setinggi viewport */
+    }
+
+    main {
+      width: 100%;
+      max-width: 500px;
+      padding-left: 20px; /* Tambahkan padding kiri */
+      padding-right: 20px; /* Tambahkan padding kanan */
+    }
+
+    .container {
+      background-color: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      padding: 24px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      animation: fade-in-up 0.6s ease-out forwards;
+    }
+
+    h1 {
+      font-size: 1.75rem;
+      font-weight: 800;
+      color: #6ee7b7;
+      animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+      margin-bottom: 24px;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      padding: 12px;
+      border-radius: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      background-color: rgba(255, 255, 255, 0.05);
+      color: #fff;
+      font-size: 0.9rem;
+      outline: none;
+      transition: border-color 0.3s ease;
+      margin-bottom: 16px;
+      text-align: center;
+    }
+
+    input[type="text"]:focus {
+      border-color: #6ee7b7;
+    }
+
+    button {
+      background: linear-gradient(to right, #4f46e5, #14b8a6);
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.3s ease, transform 0.2s ease-in-out;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+      font-size: 0.9rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 8px;
+      outline: none;
+    }
+
+    button:hover {
+      background: linear-gradient(to right, #6366f1, #16d4c4);
+      transform: scale(1.05);
+    }
+
+    #result {
+      margin-top: 24px;
+      color: #a7f3d0;
+      text-align: center;
+      font-size: 0.9rem;
+    }
+
+    .error {
+      color: #facc15 !important;
+      font-weight: bold;
+    }
+
+    footer {
+      text-align: center;
+      padding: 20px 0;
+      color: rgba(255, 255, 255, 0.6);
+      font-size: 0.8rem;
+      margin-top: 32px;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    footer a {
+      color: #6ee7b7;
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    footer a:hover {
+      text-decoration: underline;
+    }
+
+    .animate-fade-in-up {
+      animation: fade-in-up 0.6s ease-out forwards;
+    }
+
+    @keyframes fade-in-up {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .animate-fade-in {
+      animation: fade-in 0.6s ease-out forwards;
+    }
+
+    @keyframes fade-in {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .animate-pulse {
+      animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% {
+        opacity: 1;
+      }
+      50% {
+        opacity: 0.8;
+      }
+    }
+
+    .delay-100 {
+      animation-delay: 0.1s;
+    }
+  </style>
+</head>
+<body class="bg-gradient-to-br from-slate-800 to-cyan-700 flex items-center justify-center min-h-screen">
+  <main class="w-full px-4">
+    <div class="container">
+      <h1 class="text-xl font-extrabold text-blue-400 animate-pulse mb-8">TikTok Audio Downloader</h1>
+
+      <input id="urlInput"
+             type="text"
+             placeholder="Masukkan link TikTok"
+             class="w-full rounded-md border border-white/20 bg-white/5 text-white text-sm py-3 px-4 outline-none transition focus:border-blue-400 mb-4 text-center" />
+      <button id="downloadBtn" onclick="download()" class="bg-gradient-to-r from-slate-700 to-cyan-500 text-white py-2 px-4 rounded-md font-bold cursor-pointer transition hover:from-slate-600 hover:to-cyan-400 shadow-md text-sm inline-flex items-center gap-2 mt-2 outline-none">
+        <i class="fa fa-download mr-2"></i> Download Audio
+      </button>
+      <div id="result" class="animate-fade-in delay-100 mt-6 text-teal-200 text-center"></div>
+
+      <footer class="text-center py-4 text-white/60 text-sm mt-8 border-t border-white/10">
+        <p>Dibuat oleh <a href="#" target="_blank" class="font-semibold text-blue-400 hover:underline">A & Z</a></p>
+        <div class="mt-2">
+          <a href="https://whatsapp.com/channel/yourchannelid" target="_blank" class="text-green-500 hover:underline">
+            <i class="fab fa-whatsapp text-lg mr-1"></i> WhatsApp Channel
+          </a>
+        </div>
+      </footer>
+    </div>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script>
+    async function download() {
+      const url = document.getElementById('urlInput').value;
+      const resultDiv = document.getElementById('result');
+      resultDiv.innerHTML = '<p class="animate-pulse">Tunggu sebentar, audio sedang diunduh....</p>';
+
+      const tiktokPattern = /^https:\/\/(?:www\.|m\.|m\.pt\.|v\.|vt\.)?tiktok\.com\/(?:@[\w.-]+\/|t\/|video\/|.+)/;
+      if (!tiktokPattern.test(url)) {
+        resultDiv.innerHTML = `
+          <p class="error animate-fade-in font-semibold text-yellow-400">Peringatan: Link tidak valid!</p>
+          <p class="text-sm text-gray-300 mt-1">Silakan masukkan link TikTok yang benar.</p>
+        `;
+        return;
+      }
+
+      try {
+        const audioData = await getTiktokAudio(url);
+
+        if (audioData && audioData.music) {
+          const audioURL = audioData.music;
+          const filename = audioData.title ? `${audioData.title.replace(/[^a-zA-Z0-9]/g, '_')}.mp3` : 'tiktok_audio.mp3';
+
+          // Langsung fetch audio dan download sebagai Blob
+          fetch(audioURL)
+            .then(response => response.blob())
+            .then(blob => {
+              const link = document.createElement('a');
+              const objectURL = URL.createObjectURL(blob);
+              link.href = objectURL;
+              link.download = filename;
+              document.body.appendChild(link);
+              link.click();
+              document.body.removeChild(link);
+              URL.revokeObjectURL(objectURL);
+              resultDiv.innerHTML = `<p class="font-semibold text-lg text-teal-300 animate-fade-in">Berhasil diunduh!</p>`;
+              if (audioData.title) {
+                resultDiv.innerHTML += `<p class="text-sm text-gray-300 mt-1">Judul: ${audioData.title}</p>`;
+              }
+            })
+            .catch(error => {
+              console.error("Gagal mengunduh audio:", error);
+              resultDiv.innerHTML = `<p class="error animate-fade-in text-yellow-400">Gagal mengunduh audio.</p>`;
+            });
+        } else {
+          resultDiv.innerHTML = `<p class="error animate-fade-in text-yellow-400">Gagal mendapatkan informasi audio.</p>`;
+        }
+      } catch (error) {
+        console.error("Terjadi kesalahan:", error);
+        resultDiv.innerHTML = `
+          <p class="error animate-fade-in font-semibold text-yellow-400">Oops! API bermasalah.</p>
+          <p class="text-sm text-gray-300 mt-1">Coba lagi nanti.</p>
+          <button onclick="download()" class="bg-orange-400 hover:bg-orange-500 text-white px-3 py-1 rounded-md inline-block mt-2 transition">
+            <i class="fa fa-redo mr-2"></i> Coba Lagi
+          </button>
+        `;
+      }
+    }
+
+    async function getTiktokAudio(url) {
+      try {
+        const encodedParams = new URLSearchParams();
+        encodedParams.set('url', url);
+        encodedParams.set('hd', '1');
+
+        const response = await axios({
+          method: 'POST',
+          url: 'https://tikwm.com/api/',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+            'Cookie': 'current_language=en',
+            'User-Agent': 'Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Mobile Safari/537.36'
+          },
+          data: encodedParams
+        });
+
+        const data = response.data.data;
+        if (data) {
+          return {
+            title: data.title,
+            music: data.music
+          };
+        }
+        return null;
+      } catch (error) {
+        console.error("Error fetching TikTok data:", error);
+        return null;
+      }
+    }
+  </script>
+</body>
+</html>
